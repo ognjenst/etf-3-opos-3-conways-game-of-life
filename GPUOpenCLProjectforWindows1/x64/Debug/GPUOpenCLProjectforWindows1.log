@@ -1,0 +1,25 @@
+﻿  Preprocessing: Template.cl
+  Ignoring -TARGETOS option - not supported for 64-bit version of this tool 
+  
+  Using build options:  -I "C:\Users\ognje\source\repos\projekat3\GPUOpenCLProjectforWindows1"
+  Platform name: Intel(R) OpenCL
+  Device name: Intel(R) HD Graphics 620
+  Device version: OpenCL 2.1 NEO 
+  Device vendor: Intel(R) Corporation
+  Device profile: FULL_PROFILE
+  
+  Add info:
+  	Maximum work-group size: 256
+  	Compiler work-group size: (0, 0, 0)
+  	Local memory size: 0
+  	Preferred multiple of work-group size: 32
+  	Minimum amount of private memory: 0
+  	Amount of spill memory used by the kernel: 0
+  
+  Build succeeded!
+  
+cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
+  GPUOpenCLProjectforWindows.cpp
+  GPUOpenCLProjectforWindows1.vcxproj -> C:\Users\ognje\source\repos\projekat3\x64\Debug\GPUOpenCLProjectforWindows1.exe
+  Template.cl
+          1 file(s) copied.
