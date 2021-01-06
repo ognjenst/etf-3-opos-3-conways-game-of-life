@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPUOpenCLProjectforWindows1
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StefanCode", "StefanCode\StefanCode.vcxproj", "{6A64327A-D822-4B07-A93E-5530FD54024A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImageTest", "ImageTest\ImageTest.vcxproj", "{2CE1227E-08C7-42BB-927E-700E73736903}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -30,6 +32,14 @@ Global
 		{6A64327A-D822-4B07-A93E-5530FD54024A}.Release|x64.Build.0 = Release|x64
 		{6A64327A-D822-4B07-A93E-5530FD54024A}.Release|x86.ActiveCfg = Release|Win32
 		{6A64327A-D822-4B07-A93E-5530FD54024A}.Release|x86.Build.0 = Release|Win32
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Debug|x64.ActiveCfg = Debug|x64
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Debug|x64.Build.0 = Debug|x64
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Debug|x86.ActiveCfg = Debug|Win32
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Debug|x86.Build.0 = Debug|Win32
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Release|x64.ActiveCfg = Release|x64
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Release|x64.Build.0 = Release|x64
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Release|x86.ActiveCfg = Release|Win32
+		{2CE1227E-08C7-42BB-927E-700E73736903}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
