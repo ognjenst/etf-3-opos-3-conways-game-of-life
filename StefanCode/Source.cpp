@@ -9,20 +9,6 @@
 #include "GameOfLifeLib.h"
 
 
-static void setBuffer(unsigned char*& arr) {
-	unsigned char* image = new unsigned char[100];
-	std::fill(image, image + 100, 255);
-	image[3 * 10 + 3] = 0;
-	image[3 * 10 + 7] = 0;
-	image[4 * 10 + 5] = 0;
-	image[5 * 10 + 4] = 0;
-	image[5 * 10 + 6] = 0;
-	image[6 * 10 + 5] = 0;
-	image[7 * 10 + 3] = 0;
-	image[7 * 10 + 7] = 0;
-	arr = image;
-}
-
 int main()
 {
 	int selectedOption, numberOfIterations, saveOnIteration;

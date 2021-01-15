@@ -190,6 +190,8 @@
   </ItemGroup>
   <ItemGroup>
     <Intel_OpenCL_Build_Rules Include="GameOfLife.cl" />
+    <Intel_OpenCL_Build_Rules Include="kernelCorrection.cl" />
+    <Intel_OpenCL_Build_Rules Include="kernelDetection.cl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameOfLifeLib.h" />

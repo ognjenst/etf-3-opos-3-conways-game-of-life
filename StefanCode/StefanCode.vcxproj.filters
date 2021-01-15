@@ -26,6 +26,12 @@
     <Intel_OpenCL_Build_Rules Include="GameOfLife.cl">
       <Filter>Source Files</Filter>
     </Intel_OpenCL_Build_Rules>
+    <Intel_OpenCL_Build_Rules Include="kernelCorrection.cl">
+      <Filter>Source Files</Filter>
+    </Intel_OpenCL_Build_Rules>
+    <Intel_OpenCL_Build_Rules Include="kernelDetection.cl">
+      <Filter>Source Files</Filter>
+    </Intel_OpenCL_Build_Rules>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameOfLifeLib.h">

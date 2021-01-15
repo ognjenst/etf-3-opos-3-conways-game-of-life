@@ -1,4 +1,6 @@
 ﻿  Preprocessing: GameOfLife.cl
+  Preprocessing: kernelCorrection.cl
+  Preprocessing: kernelDetection.cl
   Ignoring -TARGETOS option - not supported for 64-bit version of this tool 
   
   Using build options:  -I "C:\Users\ognje\source\repos\projekat3\StefanCode"
@@ -25,6 +27,58 @@
   
   Build succeeded!
   
+  Ignoring -TARGETOS option - not supported for 64-bit version of this tool 
+  
+  Using build options:  -I "C:\Users\ognje\source\repos\projekat3\StefanCode"
+  Setting target instruction set architecture to: Default (Intel(R) Advanced Vector Extensions 2 (Intel(R) AVX2))
+  Platform name: Intel(R) OpenCL
+  Device name: Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz
+  Device version: OpenCL 2.1 (Build 0)
+  Device vendor: Intel(R) Corporation
+  Device profile: FULL_PROFILE
+  Compilation started
+  Compilation done
+  Linking started
+  Linking done
+  Device build started
+  Device build done
+  Kernel <correctionGameOfLife> was successfully vectorized (8)
+  Done.
+  correctionGameOfLife info:
+  	Maximum work-group size: 8192
+  	Compiler work-group size: (0, 0, 0)
+  	Local memory size: 0
+  	Preferred multiple of work-group size: 128
+  	Minimum amount of private memory: 0
+  
+  Build succeeded!
+  
+  Ignoring -TARGETOS option - not supported for 64-bit version of this tool 
+  
+  Using build options:  -I "C:\Users\ognje\source\repos\projekat3\StefanCode"
+  Setting target instruction set architecture to: Default (Intel(R) Advanced Vector Extensions 2 (Intel(R) AVX2))
+  Platform name: Intel(R) OpenCL
+  Device name: Intel(R) Core(TM) i7-7500U CPU @ 2.70GHz
+  Device version: OpenCL 2.1 (Build 0)
+  Device vendor: Intel(R) Corporation
+  Device profile: FULL_PROFILE
+  Compilation started
+  Compilation done
+  Linking started
+  Linking done
+  Device build started
+  Device build done
+  Kernel <detectionKernel> was successfully vectorized (8)
+  Done.
+  detectionKernel info:
+  	Maximum work-group size: 8192
+  	Compiler work-group size: (0, 0, 0)
+  	Local memory size: 0
+  	Preferred multiple of work-group size: 128
+  	Minimum amount of private memory: 0
+  
+  Build succeeded!
+  
 cl : command line warning D9035: option 'Gm' has been deprecated and will be removed in a future release
   GameOfLifeLib.cpp
   cl_version.h: CL_TARGET_OPENCL_VERSION is not defined. Defaulting to 220 (OpenCL 2.2)
@@ -32,8 +86,10 @@ C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(34,12): warni
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(50,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(51,7): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(62,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(142,11): warning C4996: 'clCreateCommandQueue': was declared deprecated
-C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(294,20): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(152,10): warning C4996: 'clCreateCommandQueue': was declared deprecated
+C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(357,20): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   StefanCode.vcxproj -> C:\Users\ognje\source\repos\projekat3\x64\Debug\StefanCode.exe
   GameOfLife.cl
-          1 file(s) copied.
+  kernelCorrection.cl
+  kernelDetection.cl
+          3 file(s) copied.
