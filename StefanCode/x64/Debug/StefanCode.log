@@ -87,7 +87,7 @@ C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(50,13): warni
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(51,7): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(62,13): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(152,10): warning C4996: 'clCreateCommandQueue': was declared deprecated
-C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(357,20): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\ognje\source\repos\projekat3\StefanCode\GameOfLifeLib.cpp(350,20): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   StefanCode.vcxproj -> C:\Users\ognje\source\repos\projekat3\x64\Debug\StefanCode.exe
   GameOfLife.cl
   kernelCorrection.cl

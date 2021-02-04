@@ -21,14 +21,16 @@ int main()
 	std::cin >> selectedOption;
 	std::cout << std::endl << "How many iterations do you want?" << std::endl;
 	std::cin >> numberOfIterations;
+	std::cout << "Broj startne iteracije: ";
+	std::cin >> saveOnIteration;
 
 	switch (selectedOption)
 	{
 	case 1:
-		RunGameFromCustomMatrix(numberOfIterations, 0);
+		RunGameFromCustomMatrix(numberOfIterations, saveOnIteration);
 		break;
 	case 2:
-		RunGameFromImage(numberOfIterations, 0);
+		RunGameFromImage(numberOfIterations, saveOnIteration);
 	default:
 		break;
 	}

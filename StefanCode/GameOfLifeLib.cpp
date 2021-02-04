@@ -108,25 +108,24 @@ void LoadCustomMatrix(unsigned char*& buffer, int& width, int& height)
 void RunTheGame(unsigned char*& buffer, const int width, const int height, int numberOfIterations, int startIteration = 0, int numberOfWorkItems = 8)
 {
 	int imageSize = width * height;
-	unsigned char* buffer2, * buffer3, * buffer1;
-	buffer1 = new unsigned char[(size_t)width * height];
+	unsigned char* buffer2, * buffer3;
 	buffer2 = new unsigned char[(size_t)width * height];
 	buffer3 = new unsigned char[(size_t)width * height];
 	bool repetition = false;
 
 
 	cl_mem d_a;
-	cl_mem d_ca;					  // Buffer for the first iteration of image
-	cl_mem d_cb;					  // Buffer for the second iteration of image
+	cl_mem d_flag;
 	cl_platform_id cpPlatform;        // OpenCL platform
 	cl_device_id device_id;           // device ID
 	cl_context context;               // context
 	cl_command_queue queue;           // command queue
 	cl_program program;               // program
 	cl_program programCorrection;     // Correction values program
+	cl_program programDetection;      // Correction values program
 	cl_kernel kernel;                 // kernel
 	cl_kernel kernelCorrection;		  // Correction values kernel
-
+	cl_kernel kernelDetection;		  // Correction values kernel
 	cl_event event;
 
 
@@ -144,7 +143,7 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 	err = clGetPlatformIDs(1, &cpPlatform, NULL);
 
 	// Get ID for the device
-	err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 1, &device_id, NULL);
+	err = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 2, &device_id, NULL);
 
 	// Create a context  
 	context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
@@ -154,14 +153,17 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 
 	char* kernelSource = readKernelSource("GameOfLife.cl");
 	char* kernelCorrectionSource = readKernelSource("kernelCorrection.cl");
+	char* kernelDetectionSource = readKernelSource("kernelDetection.cl");
 
 	// Create the compute program from the source buffer
 	program = clCreateProgramWithSource(context, 1, (const char**)&kernelSource, NULL, &err);
 	programCorrection = clCreateProgramWithSource(context, 1, (const char**)&kernelCorrectionSource, NULL, &err);
+	programDetection = clCreateProgramWithSource(context, 1, (const char**)&kernelDetectionSource, NULL, &err);
 
 	// Build the program executable
 	err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
 	err = clBuildProgram(programCorrection, 0, NULL, NULL, NULL, NULL);
+	err = clBuildProgram(programDetection, 0, NULL, NULL, NULL, NULL);
 
 	if (err)
 	{
@@ -169,6 +171,7 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 		size_t log_size;
 		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
 		clGetProgramBuildInfo(programCorrection, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
+		clGetProgramBuildInfo(programDetection, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &log_size);
 
 		// Allocate memory for the log
 		char* log = (char*)malloc(log_size);
@@ -176,6 +179,7 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 		// Get the log
 		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
 		clGetProgramBuildInfo(programCorrection, device_id, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
+		clGetProgramBuildInfo(programDetection, device_id, CL_PROGRAM_BUILD_LOG, log_size, log, NULL);
 
 		// Print the log
 		printf("%s\n", log);
@@ -186,16 +190,25 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 	// Create the compute kernel in the program we wish to run
 	kernel = clCreateKernel(program, "gameOfLife", &err);
 	kernelCorrection = clCreateKernel(programCorrection, "correctionGameOfLife", &err);
+	kernelDetection = clCreateKernel(programDetection, "detectionKernel", &err);
 
 	size_t kernelWorkGroupSize = 0;
 	clGetKernelWorkGroupInfo(kernel, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &kernelWorkGroupSize, nullptr);
 	clGetKernelWorkGroupInfo(kernelCorrection, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &kernelWorkGroupSize, nullptr);
+	clGetKernelWorkGroupInfo(kernelDetection, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &kernelWorkGroupSize, nullptr);
+
+
+	int* flag = new int[1];
+	flag[0] = 0;
 
 	// Create the input and output arrays in device memory for our calculation
 	d_a = clCreateBuffer(context, CL_MEM_READ_WRITE, imageSize, NULL, NULL);
+	d_flag = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(int), NULL, NULL);
+
 
 	// Write our data set into the input array in device memory
 	err = clEnqueueWriteBuffer(queue, d_a, CL_TRUE, 0, imageSize, buffer, 0, NULL, NULL);
+	err = clEnqueueWriteBuffer(queue, d_flag, CL_TRUE, 0, sizeof(int), flag, 0, NULL, NULL);
 
 	// Set the arguments to our compute kernel
 	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_a);
@@ -205,9 +218,12 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 	err |= clSetKernelArg(kernelCorrection, 1, sizeof(int), &width);
 
 
+	//err |= clSetKernelArg(kernelCorrection, 0, sizeof(cl_mem), &d_a);
+	//err |= clSetKernelArg(kernelCorrection, 1, sizeof(buffer2), &buffer2);
+	//err |= clSetKernelArg(kernelCorrection, 2, sizeof(int), &flag);
 	for (int i = 0; i < numberOfIterations; i++)
 	{
-
+		/*if (repetition) break;*/
 		// Execute the kernel over the entire range of the data set  
 		err = clEnqueueNDRangeKernel(queue, kernel, 2, NULL, globalSize, localSize, 0, NULL, &event);
 
@@ -218,53 +234,66 @@ void RunTheGame(unsigned char*& buffer, const int width, const int height, int n
 		clEnqueueNDRangeKernel(queue, kernelCorrection, 2, NULL, globalSize, localSize, 0, NULL, &event);
 		clWaitForEvents(1, &event);
 
-		// Read the results from the device
-		clEnqueueReadBuffer(queue, d_a, CL_TRUE, 0, imageSize, buffer, 0, NULL, &event);
-		clWaitForEvents(1, &event);
+		// Detection
+		/*clEnqueueNDRangeKernel(queue, kernelDetection, 2, NULL, globalSize, localSize, 0, NULL, &event);
+		clWaitForEvents(1, &event);*/
 
-		const std::string outFile = std::string("image") + std::to_string(i + 1) + std::string(".pgm");
-		writeImage(outFile.c_str(), buffer, width, height);
-		// release OpenCL resources
+		if (i >= startIteration) {
+			// Read the results from the device
+			clEnqueueReadBuffer(queue, d_a, CL_TRUE, 0, imageSize, buffer, 0, NULL, &event);
+			clWaitForEvents(1, &event);
 
-		//// Detection
-		//memcpy(buffer1, buffer, (size_t)(height * width));
-		/*if (!memcmp(buffer3, buffer, (size_t)(height * width)))
-		{
-			unsigned char* image = new unsigned char[height * width * BYTES_PER_PIXEL];
-			char* imageFileName = (char*)"bitmapImage.bmp";
+			//clEnqueueReadBuffer(queue, d_flag, CL_TRUE, 0, sizeof(int), flag, 0, NULL, &event);
+			//clWaitForEvents(1, &event);
 
-			int a, b;
-			for (a = 0; a < height; a++) {
-				for (b = 0; b < width; b++) {
-					if (buffer[a * width + b] == 0)
-					{
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 2) = (unsigned char)(255);             ///red
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 1) = (unsigned char)(0);              ///green
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 0) = (unsigned char)(0); ///blue
-					}
-					else
-					{
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 2) = (unsigned char)(255);             ///red
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 1) = (unsigned char)(255);              ///green
-						*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 0) = (unsigned char)(255); ///blue
+			if (flag[0] == 0) {
+				repetition = true;
+			}
+
+
+
+
+			//memcpy(buffer1, buffer, (size_t)(height * width));
+			if (!memcmp(buffer3, buffer, (size_t)(height * width)))
+			{
+				unsigned char* image = new unsigned char[height * width * BYTES_PER_PIXEL];
+				char* imageFileName = (char*)"bitmapImage.bmp";
+
+				int a, b;
+				for (a = 0; a < height; a++) {
+					for (b = 0; b < width; b++) {
+						if (buffer[a * width + b] == 0)
+						{
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 2) = (unsigned char)(255);             ///red
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 1) = (unsigned char)(0);              ///green
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 0) = (unsigned char)(0); ///blue
+						}
+						else
+						{
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 2) = (unsigned char)(255);             ///red
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 1) = (unsigned char)(255);              ///green
+							*(image + ((height - 1) - a) * width * BYTES_PER_PIXEL + b * BYTES_PER_PIXEL + 0) = (unsigned char)(255); ///blue
+						}
 					}
 				}
-			}*/
 
-			/*generateBitmapImage((unsigned char*)image, height, width, imageFileName);
-			repetition = true;*/
+				generateBitmapImage((unsigned char*)image, height, width, imageFileName);
+				repetition = true;
+			}
 
-		//}
+			memcpy(buffer3, buffer2, (size_t)(height * width));
+			memcpy(buffer2, buffer, (size_t)(height * width));
 
-		/*if (i >= startIteration)
-		{
-			const std::string outFile = std::string("image") + std::to_string(i + 1) + std::string(".pgm");
-			writeImage(outFile.c_str(), buffer, width, height);
-		}*/
+			if (i >= startIteration)
+			{
+				const std::string outFile = std::string("image") + std::to_string(i + 1) + std::string(".pgm");
+				writeImage(outFile.c_str(), buffer, width, height);
+			}
+		}
 	}
 	// END OF FOR
 
-
+	// release OpenCL resources
 	clReleaseMemObject(d_a);
 	clReleaseProgram(program);
 	clReleaseKernel(kernel);
